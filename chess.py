@@ -1,33 +1,24 @@
-import pygame
+def main():
+    chess_board()
 
-# initializing pygame
-pygame.init()
+# create chess board
+def chess_board(): 
+    board = [
+        ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+        ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+        ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+        ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+        ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+        ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+        ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+        ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
+        ]
+    
+    for row in board:
+        for piece in row:
+            # prints the piece and then adds a space at the end of it instead of going to the next line
+            print(piece, end=" ")
+        print()
 
-# constants
-WIDTH = 800
-HEIGHT = 800
-ROWS = 8
-COLS = 8
-SQUARE_SIZE = WIDTH // COLS
-
-# creating the display
-display = pygame.display.set_mode((WIDTH, HEIGHT))
-
-# opening the display
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-# creating the squares
-while 0 < WIDTH < 800 and 0 < HEIGHT < 800:
-    pygame.draw.rect(display, (128, 128, 128), (0, 0, 100, 100))
-    WIDTH - 100
-    HEIGHT - 100
-
-
-
-
-# make the pieces
-# make the pieces move 
+if __name__ == "__main__":
+    main()
