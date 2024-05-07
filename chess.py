@@ -12,7 +12,6 @@ class Chess:
 
         return True
 
-    
     def start_game(self):
         # initializes players, board, and pieces
 
@@ -22,26 +21,41 @@ class Chess:
         while self.game_engine():
             self.player_turn()
             self.end_game()
-        
 
     def player_turn(self):
-        # check player's turn 
         # moves their selected piece if it is a valid move
-
-        if self.check_turn() == "White":
-            white_select_piece = input(
-                "\nIt's WHITE's turn!\n"
-                "Which piece would you like to move? "
-                )
-            print(white_select_piece)
-            self.board.update_board()
+        
+        selected_square = input("Enter the square of the piece would you like to move: ")
+        
+        if self.check_turn == "White":
+            if square_occupied_by(selected_square) == "WHITE":
+                print("ok")
+            else:
+                print("not white turn")
+                self.player_turn()
         else:
-            black_select_piece = input(
-                "\nIt's BLACK's turn!\n"
-                "Which piece would you like to move? "
-                )
-            print(black_select_piece)
-            self.board.update_board()
+            print("not white turn")
+
+        # if self.check_turn() == "White":
+        #     white_select_square = input(
+        #         "\nIt's WHITE's turn!\n"
+        #         "Which piece would you like to move? "
+        #         )
+        #     print(white_select_square)
+        #     selected_square = white_select_square
+        #     row, col = self.cordinate_to_index(selected_square)
+        #     self.square_occupied_by(selected_square)
+        #     self.board.update_board()
+        # else:
+        #     black_select_square = input(
+        #         "\nIt's BLACK's turn!\n"
+        #         "Which piece would you like to move? "
+        #         )
+        #     print(black_select_square)
+        #     selected_square = black_select_square
+        #     row, col = self.cordinate_to_index(selected_square)
+        #     self.square_occupied_by(selected_square)
+        #     self.board.update_board()
 
     def check_turn(self):
         # returns who's turn it is
@@ -53,9 +67,29 @@ class Chess:
             self.turn -=1
             return "Black"
 
-    def check_user_input(self):
-        # coordinate input read column then row
+    def cordinate_to_index(self, selected_square):
+        # changes user input to array notation
+
+            col = selected_square[0]
+            col = self.board.col_labels[col]
+            row = 8 - int(selected_square[1])
+            print(row, col)
+            return row, col
+    
+    def is_valid_piece(self):
+        # checks to see if that is a piece that the player can move
+
         pass
+        
+
+    def square_occupied_by(self, selected_square):
+        # checks what colored piece is on that square
+
+        for piece in self.board.pieces:
+            if piece.position == selected_square:
+                return piece.color
+        print("not occupied")
+        return None
 
     def end_game(self):
         pass
@@ -150,7 +184,6 @@ class Board:
         for row in self.board:
             print(" ".join(row))
 
-
     def update_board(self):
         pass
 
@@ -161,23 +194,6 @@ class Piece():
         self.icon = icon
         self.color = color
         self.position = position
-
-    def initial_position(self):
-        # this should set the starting position based on the the cordinates that are given in the initialize function
-        
-        # coordinate = self.position
-        # col_cord, row_cord = coordinate[0], coordinate[1]
-        # col_cord = col_labels[col_cord]
-        # row_cord = col_labels[row_cord]
-        # col_cord, row_cord = row_cord, col_cord
-
-        pass
-        
-    def check_color(self):
-        pass 
-    
-    def check_type(self):
-        pass
 
 class Pawn(Piece):
     def __init__(self, color, position):
