@@ -5,6 +5,7 @@ class Chess:
     def __init__(self):
         self.turn = 1
         self.board = Board()
+        self.piece = Piece
 
     def game_engine(self):
         # if it is not checkmate then the game continues
@@ -23,49 +24,28 @@ class Chess:
             self.end_game()
 
     def player_turn(self):
-        # moves their selected piece if it is a valid move
+        # gets players input for pieces to move where 
         
-        selected_square = input("Enter the square of the piece would you like to move: ")
+        selected_square = input(
+            f"It's {self.check_turn()}'s turn!\n"
+            "Enter the square of the piece would you like to move: "
+        )
         
-        if self.check_turn == "White":
-            if square_occupied_by(selected_square) == "WHITE":
-                print("ok")
-            else:
-                print("not white turn")
-                self.player_turn()
-        else:
-            print("not white turn")
+        self.is_valid_piece(selected_square)
 
-        # if self.check_turn() == "White":
-        #     white_select_square = input(
-        #         "\nIt's WHITE's turn!\n"
-        #         "Which piece would you like to move? "
-        #         )
-        #     print(white_select_square)
-        #     selected_square = white_select_square
-        #     row, col = self.cordinate_to_index(selected_square)
-        #     self.square_occupied_by(selected_square)
-        #     self.board.update_board()
-        # else:
-        #     black_select_square = input(
-        #         "\nIt's BLACK's turn!\n"
-        #         "Which piece would you like to move? "
-        #         )
-        #     print(black_select_square)
-        #     selected_square = black_select_square
-        #     row, col = self.cordinate_to_index(selected_square)
-        #     self.square_occupied_by(selected_square)
-        #     self.board.update_board()
+        move_to_square = input(
+            "Enter the square you would like to move your piece to: "
+        )
+
+        self.move_piece()
 
     def check_turn(self):
         # returns who's turn it is
 
         if self.turn == 1:
-            self.turn += 1
-            return "White"
+            return "WHITE"
         else:
-            self.turn -=1
-            return "Black"
+            return "BLACK"
 
     def cordinate_to_index(self, selected_square):
         # changes user input to array notation
@@ -73,23 +53,77 @@ class Chess:
             col = selected_square[0]
             col = self.board.col_labels[col]
             row = 8 - int(selected_square[1])
-            print(row, col)
             return row, col
     
-    def is_valid_piece(self):
+    def is_valid_piece(self, selected_square):
         # checks to see if that is a piece that the player can move
 
-        pass
-        
+        piece = self.square_occupied_by(selected_square)
+
+        if self.check_turn() == "WHITE":
+            if piece is not None and piece.color == "WHITE":
+                print("ok")
+                self.turn += 1
+                return "VALID"
+            elif piece is not None and piece.color == "BLACK":
+                print("Not valid piece")
+                self.player_turn()
+                return "NOT VALID"
+            else:
+                print("There is no piece there! Try again.")
+                self.player_turn()
+                return "NOT VALID"
+        else:
+            if piece is not None and piece.color == "BLACK":
+                print("ok")
+                self.turn -= 1
+                return "VALID"
+            elif piece is not None and piece.color == "WHITE":
+                print("Not valid piece")
+                self.player_turn()
+                return "NOT VALID"
+            else:
+                print("There is no piece there! Try again.")
+                self.player_turn()
+                return "NOT VALID"
 
     def square_occupied_by(self, selected_square):
+        # checks if there is a piece on that square
         # checks what colored piece is on that square
 
+        row, col = self.cordinate_to_index(selected_square)
+
+        if self.board.board[row][col] != "-":
+            for piece in self.board.pieces:
+                if piece.position == selected_square:
+                    return piece
+        else:
+            return None
+
+    def move_piece(self):
+        # moves the selected piece
+
+        self.is_valid_move(self)
+        self.update_piece_position(selected_square, move_to_square)
+        self.board.update_board(self)
+
+    def is_valid_move(self, selected_square, move_to_square):
+        # checks if there is a piece blocking the selected piece
+        # checks if there are any pieces on the end square
+        # checks if the move is valid based on the selected piece
+
+        piece = self.square_occupied_by(selected_square)
+
+
+
+    def update_piece_position(self, selected_square, move_to_square):
+        # this moves the piece
+
+        selected_piece = self.square_occupied_by(selected_square)
+
         for piece in self.board.pieces:
-            if piece.position == selected_square:
-                return piece.color
-        print("not occupied")
-        return None
+            if piece.position == selected_piece.position:
+                piece.position = move_to_square
 
     def end_game(self):
         pass
@@ -185,7 +219,18 @@ class Board:
             print(" ".join(row))
 
     def update_board(self):
-        pass
+        # clears current board
+        # updates the board after a move
+
+        for i in range(8):
+            for j in range(8):
+                self.board[i][j] = "-"
+        
+        for piece in self.pieces:
+            row, col = self.position_to_index(piece.position)
+            self.board[row][col] = piece.icon
+        
+        self.create_board()
 
 
 class Piece():
@@ -194,6 +239,10 @@ class Piece():
         self.icon = icon
         self.color = color
         self.position = position
+        self.pawn = Pawn
+
+    def check_spaces_around():
+        pass
 
 class Pawn(Piece):
     def __init__(self, color, position):
