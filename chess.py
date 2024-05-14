@@ -5,7 +5,7 @@ class Chess:
     def __init__(self):
         self.turn = 1
         self.board = Board()
-        self.piece = Piece
+        
 
     def game_engine(self):
         # if it is not checkmate then the game continues
@@ -37,7 +37,7 @@ class Chess:
             "Enter the square you would like to move your piece to: "
         )
 
-        self.move_piece()
+        self.move_piece(selected_square, move_to_square)
 
     def check_turn(self):
         # returns who's turn it is
@@ -100,21 +100,34 @@ class Chess:
         else:
             return None
 
-    def move_piece(self):
+    def move_piece(self, selected_square, move_to_square):
         # moves the selected piece
 
-        self.is_valid_move(self)
-        self.update_piece_position(selected_square, move_to_square)
-        self.board.update_board(self)
+        if self.is_valid_move(selected_square, move_to_square) == "VALID":
+            self.update_piece_position(selected_square, move_to_square)
+            self.board.update_board()
+        else:
+            print("Invalid square! Please select another.")
 
     def is_valid_move(self, selected_square, move_to_square):
-        # checks if there is a piece blocking the selected piece
-        # checks if there are any pieces on the end square
-        # checks if the move is valid based on the selected piece
+        # based on what piece is selected check to see if the piece can be moved to said square
 
         piece = self.square_occupied_by(selected_square)
+        row, col = self.cordinate_to_index(selected_square)
 
-
+        if piece.name == "Pawn":
+            if piece.pawn_valid_move(selected_square, move_to_square) == "VALID":
+                return "VALID"
+        elif piece.name == "Rook":
+            pass
+        elif piece.name == "Knight":
+            pass
+        elif piece.name == "Bishop":
+            pass
+        elif piece.name == "Queen":
+            pass
+        else:
+            pass
 
     def update_piece_position(self, selected_square, move_to_square):
         # this moves the piece
@@ -155,6 +168,7 @@ class Board:
             "h": 7
         }
         self.pieces = []
+        # self.start_position = []
     
     def initialize_pieces(self):
         # initializes pieces in their starting positions
@@ -211,6 +225,7 @@ class Board:
         row, col = self.position_to_index(piece.position)
         self.board[row][col] = piece.icon
         self.pieces.append(piece)
+        # self.start_position.append(piece)
 
     def create_board(self):
         # prints out board in start state
@@ -239,9 +254,26 @@ class Piece():
         self.icon = icon
         self.color = color
         self.position = position
-        self.pawn = Pawn
+        
+        
 
-    def check_spaces_around():
+    def check_top(self, selected_square):
+        # checks the square on top of the piece
+        
+        pass
+
+    def check_bottom(self):
+        pass
+
+    def check_left(self):
+        pass
+
+    def check_right(self):
+        pass
+
+    def check_diagonal(self):
+        # checks the diagonals of the piece
+
         pass
 
 class Pawn(Piece):
@@ -252,6 +284,16 @@ class Pawn(Piece):
         color = color,
         position = position 
         )
+    
+    def pawn_valid_move(self, selected_square, move_to_square):
+        # checks if the inputted square is a valid move for a pawn 
+        
+        if self.color == "WHITE":
+            if int(selected_square[1]) < int(move_to_square[1]) <= (int(selected_square[1]) + int(2)):
+                return "VALID"
+        else:
+            if (int(selected_square[1]) - int(2)) <= int(move_to_square[1]) < int(selected_square[1]):
+                return "VALID"
 
 
 class Rook(Piece):
