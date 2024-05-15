@@ -47,7 +47,7 @@ class Chess:
         else:
             return "BLACK"
 
-    def cordinate_to_index(self, selected_square):
+    def coordinate_to_index(self, selected_square):
         # changes user input to array notation
 
             col = selected_square[0]
@@ -58,14 +58,14 @@ class Chess:
     def is_valid_piece(self, selected_square):
         # checks to see if that is a piece that the player can move
 
-        piece = self.square_occupied_by(selected_square)
+        selected_piece = self.square_occupied_by(selected_square)
 
         if self.check_turn() == "WHITE":
-            if piece is not None and piece.color == "WHITE":
+            if selected_piece is not None and selected_piece.color == "WHITE":
                 print("ok")
                 self.turn += 1
                 return "VALID"
-            elif piece is not None and piece.color == "BLACK":
+            elif selected_piece is not None and selected_piece.color == "BLACK":
                 print("Not valid piece")
                 self.player_turn()
                 return "NOT VALID"
@@ -74,11 +74,11 @@ class Chess:
                 self.player_turn()
                 return "NOT VALID"
         else:
-            if piece is not None and piece.color == "BLACK":
+            if selected_piece is not None and selected_piece.color == "BLACK":
                 print("ok")
                 self.turn -= 1
                 return "VALID"
-            elif piece is not None and piece.color == "WHITE":
+            elif selected_piece is not None and selected_piece.color == "WHITE":
                 print("Not valid piece")
                 self.player_turn()
                 return "NOT VALID"
@@ -91,7 +91,7 @@ class Chess:
         # checks if there is a piece on that square
         # checks what colored piece is on that square
 
-        row, col = self.cordinate_to_index(selected_square)
+        row, col = self.coordinate_to_index(selected_square)
 
         if self.board.board[row][col] != "-":
             for piece in self.board.pieces:
@@ -112,22 +112,38 @@ class Chess:
     def is_valid_move(self, selected_square, move_to_square):
         # based on what piece is selected check to see if the piece can be moved to said square
 
-        piece = self.square_occupied_by(selected_square)
-        row, col = self.cordinate_to_index(selected_square)
+        selected_piece = self.square_occupied_by(selected_square)
+        row, col = self.coordinate_to_index(selected_square)
 
-        if piece.name == "Pawn":
-            if piece.pawn_valid_move(selected_square, move_to_square) == "VALID":
-                return "VALID"
-        elif piece.name == "Rook":
+        if selected_piece.name == "Pawn":
+            if self.is_pawn_blocked(selected_square) != "OCCUPIED":
+                print("not occupied")
+                if selected_piece.pawn_valid_move(selected_square, move_to_square) == "VALID":
+                    return "VALID"
+            else:
+                print("The pawn is blocked!")
+                return "INVALID"
+        elif selected_piece.name == "Rook":
             pass
-        elif piece.name == "Knight":
+        elif selected_piece.name == "Knight":
             pass
-        elif piece.name == "Bishop":
+        elif selected_piece.name == "Bishop":
             pass
-        elif piece.name == "Queen":
+        elif selected_piece.name == "Queen":
             pass
         else:
             pass
+
+    def is_pawn_blocked(self, selected_square):
+        # checks if the selected pawn is blocked
+
+        selected_piece = self.square_occupied_by(selected_square)
+        top_square_coordinate = selected_piece.check_top(selected_square)
+        top_square_piece = self.square_occupied_by(top_square_coordinate)
+
+        if top_square_coordinate != None:
+            return "OCCUPIED"
+        
 
     def update_piece_position(self, selected_square, move_to_square):
         # this moves the piece
@@ -260,7 +276,8 @@ class Piece():
     def check_top(self, selected_square):
         # checks the square on top of the piece
         
-        pass
+        top_square_coordinate = selected_square[0] + str(int(selected_square[1]) + 1)
+        return top_square_coordinate
 
     def check_bottom(self):
         pass
@@ -289,11 +306,23 @@ class Pawn(Piece):
         # checks if the inputted square is a valid move for a pawn 
         
         if self.color == "WHITE":
-            if int(selected_square[1]) < int(move_to_square[1]) <= (int(selected_square[1]) + int(2)):
-                return "VALID"
+            if selected_square[1] == "2":
+                if int(selected_square[1]) < int(move_to_square[1]) <= (int(selected_square[1]) + 2):
+                    return "VALID"
+            elif selected_square[1] != "2":
+                if int(selected_square[1]) < int(move_to_square[1]) <= (int(selected_square[1]) + 1):
+                    return "VALID"
+            else:
+                return "INVALID"
         else:
-            if (int(selected_square[1]) - int(2)) <= int(move_to_square[1]) < int(selected_square[1]):
-                return "VALID"
+            if selected_square[1] == "7":
+                if (int(selected_square[1]) - 2) <= int(move_to_square[1]) < int(selected_square[1]):
+                    return "VALID"
+            elif selected_square[1] != "7":
+                if (int(selected_square[1]) - 1) <= int(move_to_square[1]) < int(selected_square[1]):
+                    return "VALID"
+            else:
+                return "INVALID"
 
 
 class Rook(Piece):
