@@ -61,11 +61,11 @@ class Chess:
         selected_piece = self.square_occupied_by(selected_square)
 
         if self.check_turn() == "WHITE":
-            if selected_piece is not None and selected_piece.color == "WHITE":
+            if selected_piece != "EMPTY" and selected_piece.color == "WHITE":
                 print("ok")
                 self.turn += 1
                 return "VALID"
-            elif selected_piece is not None and selected_piece.color == "BLACK":
+            elif selected_piece != "EMPTY" and selected_piece.color == "BLACK":
                 print("Not valid piece")
                 self.player_turn()
                 return "NOT VALID"
@@ -74,11 +74,11 @@ class Chess:
                 self.player_turn()
                 return "NOT VALID"
         else:
-            if selected_piece is not None and selected_piece.color == "BLACK":
+            if selected_piece != "EMPTY" and selected_piece.color == "BLACK":
                 print("ok")
                 self.turn -= 1
                 return "VALID"
-            elif selected_piece is not None and selected_piece.color == "WHITE":
+            elif selected_piece != "EMPTY" and selected_piece.color == "WHITE":
                 print("Not valid piece")
                 self.player_turn()
                 return "NOT VALID"
@@ -98,7 +98,7 @@ class Chess:
                 if piece.position == selected_square:
                     return piece
         else:
-            return None
+            return "EMPTY"
 
     def move_piece(self, selected_square, move_to_square):
         # moves the selected piece
@@ -116,7 +116,7 @@ class Chess:
         row, col = self.coordinate_to_index(selected_square)
 
         if selected_piece.name == "Pawn":
-            if self.is_pawn_blocked(selected_square) != "OCCUPIED":
+            if self.is_pawn_blocked(selected_square) != "BLOCKED":
                 print("not occupied")
                 if selected_piece.pawn_valid_move(selected_square, move_to_square) == "VALID":
                     return "VALID"
@@ -134,16 +134,88 @@ class Chess:
         else:
             pass
 
+    def check_top(self, selected_square):
+        # checks the square on top of the piece
+        
+        top_square_coordinate = selected_square[0] + str(int(selected_square[1]) + 1)
+        
+        return top_square_coordinate
+
+    def check_bottom(self, selected_square):
+        # checks square below the piece 
+
+        bottom_square_coordinate = selected_square[0] + str(int(selected_square[1]) - 1)
+        
+        return bottom_square_coordinate
+
+    def check_left(self, selected_square):
+        # checks square to the left of the piece
+
+        col = selected_square[0]
+        col = (int(self.board.col_labels[col]) - 1)
+        col = self.board.col_labels[col]
+        left_square_coordinate = col + selected_square[1]
+
+        return left_square_coordinate        
+
+    def check_right(self, selected_square):
+        # checks the square to the right of the piece
+
+        col = selected_square[0]
+        col = (int(self.board.col_labels[col]) + 1)
+        col = self.board.col_labels[col]
+        right_square_coordinate = col + selected_square[1]
+
+        return right_square_coordinate
+
+    def check_top_left(self, selected_square):
+        # checks the top left square of the selected piece
+
+        left_square_coordinate = self.check_left(selected_square)
+        top_left_coordinate = left_square_coordinate[0] + str(int(left_square_coordinate[1] + 1))
+
+        return top_left_coordinate
+    
+    def check_top_right(self, selected_square):
+        # checks top right square of selected piece
+
+        right_square_coordinate = self.check_right(selected_square)
+        top_right_coordinate = right_square_coordinate[0] + str(int(right_square_coordinate[1] + 1))
+
+        return top_right_coordinate
+    
+    def check_bottom_left(self, selected_square):
+        # checks bottom left square of selected piece
+
+        left_square_coordinate = self.check_left(selected_square)
+        bottom_left_coordinate = left_square_coordinate[0] + str(int(left_square_coordinate[1] - 1))
+
+        return bottom_left_coordinate
+    
+    def check_bottom_right(self, selected_square):
+        # checks bottom right square of selected piece
+
+        right_square_coordinate = self.check_right(selected_square)
+        bottom_right_coordinate = right_square_coordinate[0] + str(int(right_square_coordinate[1] - 1))
+
+        return bottom_right_coordinate
+
     def is_pawn_blocked(self, selected_square):
         # checks if the selected pawn is blocked
 
         selected_piece = self.square_occupied_by(selected_square)
-        top_square_coordinate = selected_piece.check_top(selected_square)
-        top_square_piece = self.square_occupied_by(top_square_coordinate)
-
-        if top_square_coordinate != None:
-            return "OCCUPIED"
         
+        top_square_coordinate = self.check_top(selected_square)
+        top_square_piece = self.square_occupied_by(top_square_coordinate)
+        bottom_square_coordinate = self.check_bottom(selected_square)
+        bottom_square_piece = self.square_occupied_by(bottom_square_coordinate)
+        
+        if selected_piece.color == "WHITE":
+            if top_square_piece != "EMPTY":
+                return "BLOCKED"
+        else:
+            if bottom_square_piece != "EMPTY":
+                return "BLOCKED"
 
     def update_piece_position(self, selected_square, move_to_square):
         # this moves the piece
@@ -271,28 +343,6 @@ class Piece():
         self.color = color
         self.position = position
         
-        
-
-    def check_top(self, selected_square):
-        # checks the square on top of the piece
-        
-        top_square_coordinate = selected_square[0] + str(int(selected_square[1]) + 1)
-        return top_square_coordinate
-
-    def check_bottom(self):
-        pass
-
-    def check_left(self):
-        pass
-
-    def check_right(self):
-        pass
-
-    def check_diagonal(self):
-        # checks the diagonals of the piece
-
-        pass
-
 class Pawn(Piece):
     def __init__(self, color, position):
         super().__init__(
