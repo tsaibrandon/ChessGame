@@ -12,6 +12,7 @@ class Board:
             ["-", "-", "-", "-", "-", "-", "-", "-"],
             ["-", "-", "-", "-", "-", "-", "-", "-"]
         ]
+        
         self.col_labels = {
             "a": 0,
             "b": 1,
@@ -22,54 +23,33 @@ class Board:
             "g": 6,
             "h": 7
         }
+        
         self.pieces = []
-        # self.start_position = []
     
     def initialize_pieces(self):
-        # initializes pieces in their starting positions
+        for col_letter in ["a", "b", "c", "d", "e", "f", "g", "h"]:
+            self.place_piece(Pawn(color="WHITE", position=f"{col_letter}2"))
+            
+        for col_letter in ["a", "b", "c", "d", "e", "f", "g", "h"]:
+            self.place_piece(Pawn(color="BLACK", position=f"{col_letter}7"))
         
-        white_pieces = [
-            Pawn(color = "WHITE", position = "a2"),
-            Pawn(color = "WHITE", position = "b2"),
-            Pawn(color = "WHITE", position = "c2"),
-            Pawn(color = "WHITE", position = "d2"),
-            Pawn(color = "WHITE", position = "e2"),
-            Pawn(color = "WHITE", position = "f2"),
-            Pawn(color = "WHITE", position = "g2"),
-            Pawn(color = "WHITE", position = "h2"),
-            Rook(color = "WHITE", position = "a1"),
-            Rook(color = "WHITE", position = "h1"),
-            Knight(color = "WHITE", position = "b1"),
-            Knight(color = "WHITE", position = "g1"),
-            Bishop(color = "WHITE", position = "c1"),
-            Bishop(color = "WHITE", position = "f1"),
-            Queen(color = "WHITE", position = "d1"),
-            King(color = "WHITE", position = "e1")
-        ]
-
-        black_pieces = [
-            Pawn(color = "BLACK", position = "a7"),
-            Pawn(color = "BLACK", position = "b7"),
-            Pawn(color = "BLACK", position = "c7"),
-            Pawn(color = "BLACK", position = "d7"),
-            Pawn(color = "BLACK", position = "e7"),
-            Pawn(color = "BLACK", position = "f7"),
-            Pawn(color = "BLACK", position = "g7"),
-            Pawn(color = "BLACK", position = "h7"),
-            Rook(color = "BLACK", position = "a8"),
-            Rook(color = "BLACK", position = "h8"),
-            Knight(color = "BLACK", position = "b8"),
-            Knight(color = "BLACK", position = "g8"),
-            Bishop(color = "BLACK", position = "c8"),
-            Bishop(color = "BLACK", position = "f8"),
-            Queen(color = "BLACK", position = "e8"),
-            King(color = "BLACK", position = "d8")
-        ]
-
-        all_pieces = white_pieces + black_pieces
-
-        for piece in all_pieces:
-            self.place_piece(piece)
+        self.place_piece(Rook(color="WHITE", position="a1"))
+        self.place_piece(Knight(color="WHITE", position="b1"))
+        self.place_piece(Bishop(color="WHITE", position="c1"))
+        self.place_piece(Queen(color="WHITE", position="d1"))
+        self.place_piece(King(color="WHITE", position="e1"))
+        self.place_piece(Bishop(color="WHITE", position="f1"))
+        self.place_piece(Knight(color="WHITE", position="g1"))
+        self.place_piece(Rook(color="WHITE", position="h1"))
+        
+        self.place_piece(Rook(color="BLACK", position="a8"))
+        self.place_piece(Knight(color="BLACK", position="b8"))
+        self.place_piece(Bishop(color="BLACK", position="c8"))
+        self.place_piece(Queen(color="BLACK", position="d8"))
+        self.place_piece(King(color="BLACK", position="e8"))
+        self.place_piece(Bishop(color="BLACK", position="f8"))
+        self.place_piece(Knight(color="BLACK", position="g8"))
+        self.place_piece(Rook(color="BLACK", position="h8"))
 
     def position_to_index(self, position):
         col = self.col_labels[position[0]]
@@ -80,18 +60,18 @@ class Board:
         row, col = self.position_to_index(piece.position)
         self.board[row][col] = piece.icon
         self.pieces.append(piece)
-        # self.start_position.append(piece)
 
     def create_board(self):
-        # prints out board in start state
+        print()
+        
+        for i, row in enumerate(self.board):
+            print(f"{8-i}|{' '.join(row)}")
+            
+        print("  ---------------")
+        print("  a b c d e f g h\n")
 
-        for row in self.board:
-            print(" ".join(row))
 
     def update_board(self):
-        # clears current board
-        # updates the board after a move
-
         for i in range(8):
             for j in range(8):
                 self.board[i][j] = "-"
@@ -101,3 +81,9 @@ class Board:
             self.board[row][col] = piece.icon
         
         self.create_board()
+    
+    def get_piece_at(self, position):
+        for piece in self.pieces:
+            if piece.position == position:
+                return piece
+        return None
