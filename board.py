@@ -87,3 +87,9 @@ class Board:
             if piece.position == position:
                 return piece
         return None
+            
+    
+    def get_piece_color(self, piece):
+        if piece is not None:
+            return piece.color
+        return None
