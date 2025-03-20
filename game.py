@@ -7,7 +7,7 @@ class Chess:
     """
     def __init__(self):
         self.board = Board()
-        self.turn = "White"
+        self.turn = "WHITE"
         
 
     def start_game(self):
@@ -16,10 +16,10 @@ class Chess:
         self.board.create_board()
 
     def player_turn(self):
-        if self.turn == "White":
-            self.turn = "Black"
+        if self.turn == "WHITE":
+            self.turn = "BLACK"
         else: 
-            self.turn = "White"
+            self.turn = "WHITE"
 
 
     # def coordinate_to_index(self, selected_square):
