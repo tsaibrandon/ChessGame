@@ -27,6 +27,7 @@ class Board:
         self.pieces = []
     
     def initialize_pieces(self):
+        #can we use col_labels for this?
         for col_letter in ["a", "b", "c", "d", "e", "f", "g", "h"]:
             self.place_piece(Pawn(color="WHITE", position=f"{col_letter}2"))
             
@@ -88,8 +89,16 @@ class Board:
                 return piece
         return None
             
-    
     def get_piece_color(self, piece):
         if piece is not None:
             return piece.color
         return None
+    
+    def is_empty_square(self, position):
+        row, col = self.position_to_index(position)
+        
+        if self.board[row][col] != "-":
+            return False
+        else:
+            return True
+        
