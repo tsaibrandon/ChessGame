@@ -2,9 +2,6 @@ from board import Board
 from pieces import Pawn, Rook, Knight, Bishop, Queen, King
 
 class Chess:
-    """
-        This engine of the game. Where all the basic rules are kept to make sure the game runs properly.
-    """
     def __init__(self):
         self.board = Board()
         self.turn = "WHITE"
@@ -21,15 +18,6 @@ class Chess:
         else: 
             self.turn = "WHITE"
 
-
-    # def coordinate_to_index(self, selected_square):
-    #     # changes user input to array notation
-
-    #     col = selected_square[0]
-    #     col = self.board.col_labels[col]
-    #     row = 8 - int(selected_square[1])
-    #     return row, col
-    
     # def end_game(self):
     #     pass
 
@@ -42,6 +30,46 @@ class Chess:
         else:
             print(f"Checkmate! {self.turn} wins!")
             return False
+        
+    def valid_input(self, input_str):
+        if len(input_str) == 2:
+            if input_str[0].isalpha() and input_str[1].isdigit():
+                return True
+            else:
+                print("Your input is invalid! Please try again.\n")
+                return False
+        else:
+            print("Your input is invalid! Please try again.\n")
+            return False
+        
+    def valid_piece(self):
+        while True:
+            piece_pos = input("Enter the square of your piece (e.g. 'e2'): ")
+            
+            if not self.valid_input(piece_pos):
+                continue
+            
+            piece_color = self.board.get_piece_color(self.board.get_piece_at(piece_pos))
+            
+            if piece_color is None:
+                print("There is no piece there! Please select one of your pieces.\n")
+            elif piece_color != self.turn:
+                print("This is not your piece. Please select one of your pieces.\n")
+            else:
+                return piece_pos
 
+    def valid_destination(self, from_square):
+        while True:
+            to_square = input("Select a square to move to (e.g. 'e4'): ")
+            
+            if not self.valid_input(to_square):
+                continue
+            
+            if not self.board.is_empty_square(to_square):
+                print("Square is occupied! Please select an empty square.\n")
+                continue
 
+            break
+            
+            # return to_square
     
