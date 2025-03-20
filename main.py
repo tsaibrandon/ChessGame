@@ -1,5 +1,4 @@
 from game import Chess
-from board import Board
 
 def valid_input(input):
     if len(input) == 2:
@@ -14,32 +13,37 @@ def valid_input(input):
 
 def main():
     game = Chess()
-    board = Board()
     game.start_game()
     
     # Game loop
     while game.game_engine():
         print(f"It's {game.turn}'s turn")
 
-        while True:
+        selected_piece = False
+
+        while not selected_piece:
+            #implement a way so that the board stays in view even if there is too much text appearing while validating a piece move
             first_input = input("Enter the square of your piece (e.g. 'e2'): ")
-            if not valid_input(first_input):
-                continue
-            else:
-                piece_color = board.get_piece_color(board.get_piece_at(first_input))
-                print(piece_color)
+            if valid_input(first_input):
+                piece_color = game.board.get_piece_color(game.board.get_piece_at(first_input)) 
 
                 if piece_color == None:
-                    print("There is no piece there! Please select one of your pieces.")
+                    print("There is no piece there! Please select one of your pieces.\n")
                     continue
                 elif piece_color != game.turn:
-                    print("This is not your piece. Please select one of your pieces.")
+                    print("This is not your piece. Please select one of your pieces.\n")
                     continue
-
-            second_input = input("Select a square to move to (e.g. 'e4'): ")
-            if not valid_input(second_input):
+                else:
+                    selected_piece = True
+            else:
                 continue
 
+        while selected_piece:
+            second_input = input("Select a square to move to (e.g. 'e4'): ")
+            if valid_input(second_input):
+                if game.board.is_empty_square(second_input) == False:
+                    print("Square is occupied! Please select an empty square.\n")
+                    continue
             break
         
         game.player_turn()
