@@ -1,7 +1,5 @@
 # CLI Chess
 
-*PROJECT ON HOLD*
-
 A playable chess game using the command line
 
 Tech Stack
@@ -12,7 +10,6 @@ Features
 - Turn-based system with input validation and error handling
 
 Need To Fix
-- Finish adding piece movement
 
 Features to Add
 - Check validation
