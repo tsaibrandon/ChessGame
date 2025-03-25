@@ -8,8 +8,8 @@ def main():
     while game.game_engine():
         print(f"It's {game.turn}'s turn")
 
-        from_square = game.valid_piece()
-        to_square = game.valid_destination(from_square)
+        game.from_square = game.valid_piece()
+        game.to_square = game.valid_destination(game.from_square)
         
         game.player_turn()
 
