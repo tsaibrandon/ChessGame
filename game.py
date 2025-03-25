@@ -71,19 +71,44 @@ class Chess:
             
             piece = self.board.get_piece_at(from_square)
             
-            #validate move for piece
             if not self.is_valid_move(piece, from_square, to_square):
                 print("Invalid move for this piece! Try again.\n")
                 continue
+
+            if piece.name != "Knight" and self.is_path_blocked(from_square, to_square):
+                print("There are pieces blocking the path! Try again.\n")
+                continue
             
-            #check if your piece is occupying that square
+            #check if you can capture or your piece is there
             target_piece = self.board.get_piece_at(to_square)
             if target_piece is not None:
                 if target_piece.color == piece.color:
                     print("Square is occupied by your own piece! Try again.\n")
                     continue
+                print(f"Capturing {target_piece.color} {target_piece.name}!")
+                self.board.remove_piece(target_piece)
             
             return to_square
+
+    def is_path_blocked(self, from_square, to_square):
+        from_row, from_col = self.board.position_to_index(from_square)
+        to_row, to_col = self.board.position_to_index(to_square)
+        
+        #check which way piece is moving
+        row_step = 0 if to_row == from_row else (to_row - from_row) // abs(to_row - from_row)
+        col_step = 0 if to_col == from_col else (to_col - from_col) // abs(to_col - from_col)
+        
+        #check squares inbtween start and end position
+        current_row = from_row + row_step
+        current_col = from_col + col_step
+        
+        while (current_row, current_col) != (to_row, to_col):
+            if not self.board.check_empty_square(current_row, current_col):
+                return True
+            current_row += row_step
+            current_col += col_step
+        
+        return False
 
     def is_valid_move(self, piece, from_square, to_square):
         from_row, from_col = self.board.position_to_index(from_square)
@@ -108,10 +133,30 @@ class Chess:
         return False
 
     def is_valid_pawn_move(self, piece, row_diff, col_diff):
+        # Get starting row for pawns based on color
+        start_row = 6 if piece.color == "WHITE" else 1
+        from_row, _ = self.board.position_to_index(piece.position)
+        
         if piece.color == "WHITE":
-            return row_diff == -1 and col_diff == 0
-        else:
-            return row_diff == 1 and col_diff == 0
+            if row_diff == -1 and col_diff == 0:
+                return True
+            if from_row == start_row and row_diff == -2 and col_diff == 0:
+                return True
+            if row_diff == -1 and abs(col_diff) == 1:
+                target_pos = self.board.index_to_position(from_row + row_diff, _ + col_diff)
+                target_piece = self.board.get_piece_at(target_pos)
+                return target_piece is not None and target_piece.color != piece.color
+        else:  
+            if row_diff == 1 and col_diff == 0:
+                return True
+            if from_row == start_row and row_diff == 2 and col_diff == 0:
+                return True
+            if row_diff == 1 and abs(col_diff) == 1:
+                target_pos = self.board.index_to_position(from_row + row_diff, _ + col_diff)
+                target_piece = self.board.get_piece_at(target_pos)
+                return target_piece is not None and target_piece.color != piece.color
+            
+        return False
 
     def is_valid_rook_move(self, row_diff, col_diff):
         return (row_diff == 0 and col_diff != 0) or (col_diff == 0 and row_diff != 0)
