@@ -135,24 +135,42 @@ class Chess:
     def is_valid_pawn_move(self, piece, row_diff, col_diff):
         # Get starting row for pawns based on color
         start_row = 6 if piece.color == "WHITE" else 1
-        from_row, _ = self.board.position_to_index(piece.position)
+        from_row, from_col = self.board.position_to_index(piece.position)
         
         if piece.color == "WHITE":
-            if row_diff == -1 and col_diff == 0:
-                return True
-            if from_row == start_row and row_diff == -2 and col_diff == 0:
-                return True
+            # Forward moves
+            if col_diff == 0:
+                # Single square forward
+                if row_diff == -1:
+                    target_pos = self.board.index_to_position(from_row - 1, from_col)
+                    return self.board.get_piece_at(target_pos) is None
+                # Double square forward from starting position
+                if from_row == start_row and row_diff == -2:
+                    one_forward = self.board.index_to_position(from_row - 1, from_col)
+                    two_forward = self.board.index_to_position(from_row - 2, from_col)
+                    return (self.board.get_piece_at(one_forward) is None and 
+                           self.board.get_piece_at(two_forward) is None)
+            # Diagonal capture
             if row_diff == -1 and abs(col_diff) == 1:
-                target_pos = self.board.index_to_position(from_row + row_diff, _ + col_diff)
+                target_pos = self.board.index_to_position(from_row + row_diff, from_col + col_diff)
                 target_piece = self.board.get_piece_at(target_pos)
                 return target_piece is not None and target_piece.color != piece.color
         else:  
-            if row_diff == 1 and col_diff == 0:
-                return True
-            if from_row == start_row and row_diff == 2 and col_diff == 0:
-                return True
+            # Forward moves
+            if col_diff == 0:
+                # Single square forward
+                if row_diff == 1:
+                    target_pos = self.board.index_to_position(from_row + 1, from_col)
+                    return self.board.get_piece_at(target_pos) is None
+                # Double square forward from starting position
+                if from_row == start_row and row_diff == 2:
+                    one_forward = self.board.index_to_position(from_row + 1, from_col)
+                    two_forward = self.board.index_to_position(from_row + 2, from_col)
+                    return (self.board.get_piece_at(one_forward) is None and 
+                           self.board.get_piece_at(two_forward) is None)
+            # Diagonal capture
             if row_diff == 1 and abs(col_diff) == 1:
-                target_pos = self.board.index_to_position(from_row + row_diff, _ + col_diff)
+                target_pos = self.board.index_to_position(from_row + row_diff, from_col + col_diff)
                 target_piece = self.board.get_piece_at(target_pos)
                 return target_piece is not None and target_piece.color != piece.color
             
