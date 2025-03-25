@@ -36,6 +36,8 @@ class Chess:
             return False
         
     def valid_input(self, input_str):
+        if input_str.lower() in ['back', 'b']:
+            return True
         if len(input_str) == 2:
             if input_str[0].isalpha() and input_str[1].isdigit():
                 return True
@@ -64,7 +66,10 @@ class Chess:
 
     def valid_destination(self, from_square):
         while True:
-            to_square = input("Select a square to move to (e.g. 'e4'): ")
+            to_square = input("Select a square to move to (e.g. 'e4') or enter 'back'/'b' to select a different piece: ")
+            
+            if to_square.lower() in ['back', 'b']:
+                return self.valid_piece()
             
             if not self.valid_input(to_square):
                 continue
@@ -133,42 +138,34 @@ class Chess:
         return False
 
     def is_valid_pawn_move(self, piece, row_diff, col_diff):
-        # Get starting row for pawns based on color
         start_row = 6 if piece.color == "WHITE" else 1
         from_row, from_col = self.board.position_to_index(piece.position)
         
         if piece.color == "WHITE":
-            # Forward moves
+
             if col_diff == 0:
-                # Single square forward
                 if row_diff == -1:
                     target_pos = self.board.index_to_position(from_row - 1, from_col)
                     return self.board.get_piece_at(target_pos) is None
-                # Double square forward from starting position
                 if from_row == start_row and row_diff == -2:
                     one_forward = self.board.index_to_position(from_row - 1, from_col)
                     two_forward = self.board.index_to_position(from_row - 2, from_col)
                     return (self.board.get_piece_at(one_forward) is None and 
                            self.board.get_piece_at(two_forward) is None)
-            # Diagonal capture
             if row_diff == -1 and abs(col_diff) == 1:
                 target_pos = self.board.index_to_position(from_row + row_diff, from_col + col_diff)
                 target_piece = self.board.get_piece_at(target_pos)
                 return target_piece is not None and target_piece.color != piece.color
         else:  
-            # Forward moves
             if col_diff == 0:
-                # Single square forward
                 if row_diff == 1:
                     target_pos = self.board.index_to_position(from_row + 1, from_col)
                     return self.board.get_piece_at(target_pos) is None
-                # Double square forward from starting position
                 if from_row == start_row and row_diff == 2:
                     one_forward = self.board.index_to_position(from_row + 1, from_col)
                     two_forward = self.board.index_to_position(from_row + 2, from_col)
                     return (self.board.get_piece_at(one_forward) is None and 
                            self.board.get_piece_at(two_forward) is None)
-            # Diagonal capture
             if row_diff == 1 and abs(col_diff) == 1:
                 target_pos = self.board.index_to_position(from_row + row_diff, from_col + col_diff)
                 target_piece = self.board.get_piece_at(target_pos)
