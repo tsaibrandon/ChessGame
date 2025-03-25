@@ -10,8 +10,11 @@ Features
 - Turn-based system with input validation and error handling
 
 Need To Fix
+- Function to allow players to select a different piece after already selecting one
 
 Features to Add
 - Check validation
 - Checkmate validation
 - Stalemate validation
+- Castling
+- En Passant
