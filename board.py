@@ -102,3 +102,14 @@ class Board:
         else:
             return True
         
+    def remove_piece(self, piece):
+        self.pieces.remove(piece)
+
+    def check_empty_square(self, row, col):
+        return self.board[row][col] == "-"
+
+    def index_to_position(self, row, col):
+        col_letter = list(self.col_labels.keys())[list(self.col_labels.values()).index(col)]
+        row_number = 8 - row
+        return f"{col_letter}{row_number}"
+        
